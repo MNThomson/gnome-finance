@@ -1,0 +1,10 @@
+{
+	"description" : "Display user's total equity (stocks) in Gnome panel",
+	"name" : "Gnome Finance",
+	"shell-version" : [
+		"42"
+	],
+	"url" : "https://github.com/MNThomson/gnome-finance",
+	"uuid" : "gnomefinance@mnt.dev",
+	"version" : 1
+}
