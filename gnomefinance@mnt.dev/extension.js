@@ -13,7 +13,7 @@ function getStockValue(ticker, quantity) {
   cmd = CURL.replace('%SYMBOL%', ticker)
   var [ok, out, err, exit] = GLib.spawn_command_line_sync(cmd);
   if (out.length > 0) {
-    return +(out.toString().replace('\n', '').slice(92, 97)) * quantity
+    return Math.round((+(out.toString().replace('\n', '').slice(92, 97)) * quantity)*100)/100;
   } else {
     return 0.0
   }
