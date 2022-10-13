@@ -13,14 +13,8 @@ const CURL = `curl 'https://app-money.tmx.com/graphql' -X POST -H 'content-type:
 function getStockValue(ticker, quantity) {
   cmd = CURL.replace("%SYMBOL%", ticker);
   var [ok, out, err, exit] = GLib.spawn_command_line_sync(cmd);
-  if (out.length > 0) {
-    return (
-      Math.round(
-        +ByteArray.toString(out).replace("\n", "").slice(92, 97) *
-          quantity *
-          100
-      ) / 100
-    );
+  if (out.length >= 97) {
+    return +ByteArray.toString(out).replace("\n", "").slice(92, 97) * quantity;
   } else {
     return 0.0;
   }
@@ -35,6 +29,8 @@ function setButtonText() {
   }
 
   totalVal += Config.cash();
+
+  totalVal = Math.round(totalVal * 100) / 100;
 
   output = "$" + totalVal;
   panelButtonText.set_text(output);
