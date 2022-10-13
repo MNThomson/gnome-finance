@@ -1,4 +1,5 @@
 const { St, GLib, Clutter, Soup } = imports.gi;
+const ByteArray = imports.byteArray;
 const Main = imports.ui.main;
 const Mainloop = imports.mainloop;
 
@@ -15,7 +16,9 @@ function getStockValue(ticker, quantity) {
   if (out.length > 0) {
     return (
       Math.round(
-        +out.toString().replace("\n", "").slice(92, 97) * quantity * 100
+        +ByteArray.toString(out).replace("\n", "").slice(92, 97) *
+          quantity *
+          100
       ) / 100
     );
   } else {
@@ -30,6 +33,8 @@ function setButtonText() {
   for (let i = 0; i < Config.stocks().length; i++) {
     totalVal += getStockValue(Config.stocks()[i][0], Config.stocks()[i][1]);
   }
+
+  totalVal += Config.cash();
 
   output = "$" + totalVal;
   panelButtonText.set_text(output);
