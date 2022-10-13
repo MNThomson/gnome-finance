@@ -7,30 +7,34 @@ const Config = Extension.imports.config;
 
 let panelButton, panelButtonText, timeout;
 
-const CURL = `curl 'https://app-money.tmx.com/graphql' -X POST -H 'content-type: application/json' --compressed --data '{"operationName":"getQuoteBySymbol","variables":{"symbol":"%SYMBOL%","locale":"en"},"query":"query getQuoteBySymbol($symbol: String, $locale: String){getQuoteBySymbol(symbol: $symbol, locale: $locale) {\\nsymbol\\nname\\nprice\\npriceChange\\npercentChange}}"}'`
+const CURL = `curl 'https://app-money.tmx.com/graphql' -X POST -H 'content-type: application/json' --compressed --data '{"operationName":"getQuoteBySymbol","variables":{"symbol":"%SYMBOL%","locale":"en"},"query":"query getQuoteBySymbol($symbol: String, $locale: String){getQuoteBySymbol(symbol: $symbol, locale: $locale) {\\nsymbol\\nname\\nprice\\npriceChange\\npercentChange}}"}'`;
 
 function getStockValue(ticker, quantity) {
-  cmd = CURL.replace('%SYMBOL%', ticker)
+  cmd = CURL.replace("%SYMBOL%", ticker);
   var [ok, out, err, exit] = GLib.spawn_command_line_sync(cmd);
   if (out.length > 0) {
-    return Math.round((+(out.toString().replace('\n', '').slice(92, 97)) * quantity)*100)/100;
+    return (
+      Math.round(
+        +out.toString().replace("\n", "").slice(92, 97) * quantity * 100
+      ) / 100
+    );
   } else {
-    return 0.0
+    return 0.0;
   }
 }
 
 function setButtonText() {
-  printerr("[GNOME FINANCE] *********************************************")
+  printerr("[GNOME FINANCE] *********************************************");
 
-  let totalVal = 0.0
+  let totalVal = 0.0;
   for (let i = 0; i < Config.stocks().length; i++) {
-    totalVal += getStockValue(Config.stocks()[i][0], Config.stocks()[i][1])
+    totalVal += getStockValue(Config.stocks()[i][0], Config.stocks()[i][1]);
   }
 
-  output = "$" + totalVal
+  output = "$" + totalVal;
   panelButtonText.set_text(output);
 
-  printerr("[GNOME FINANCE] *********************************************")
+  printerr("[GNOME FINANCE] *********************************************");
 }
 
 function init() {
@@ -44,7 +48,7 @@ function init() {
 
 function enable() {
   Main.panel._rightBox.insert_child_at_index(panelButton, 1);
-  setButtonText()
+  setButtonText();
   timeout = Mainloop.timeout_add_seconds(900.0, setButtonText);
 }
 

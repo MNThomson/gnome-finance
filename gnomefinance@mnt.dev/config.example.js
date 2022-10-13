@@ -1,3 +1,3 @@
-function stocks(){
-    return [["APPL", 100]]
+function stocks() {
+  return [["APPL", 100]];
 }
